@@ -75,7 +75,7 @@ Expenses by Category:
 
 ---
 
-## 🧠 How it works (explained simply)
+## 🧠 How it works
 
 ### 1. Every expense is a dictionary
 
@@ -154,7 +154,7 @@ for expense in a:
 
 ```python
 with open('ETracker.json', 'w') as f:
-    json.dump(a, f, indent=4)
+    json.dump(a, f)
 ```
 
 - `'w'` means write. `json.dump` turns the list into text and stores it in the file.
