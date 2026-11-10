@@ -169,4 +169,4 @@ expense-tracker/
 
 ---
 
-Made by **<your name>** · Part of my 16-week AI Engineer roadmap
+Made by Kamal Teja Goud M· Part of my 16-week AI Engineer roadmap
