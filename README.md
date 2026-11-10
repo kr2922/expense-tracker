@@ -1,6 +1,6 @@
 # 💰 Expense Tracker (Python CLI)
 
-A simple **command-line app** to record your daily expenses, see where your money goes, and keep your data safe in a file, so nothing is lost when you close the program.
+A simple **command-line app** to record your daily expenses, see where your money goes each month, and keep your data safe in a file, so nothing is lost when you close the program.
 
 Built as **Project 1** of my AI Engineer learning roadmap, using only core Python (no extra libraries).
 
@@ -8,13 +8,13 @@ Built as **Project 1** of my AI Engineer learning roadmap, using only core Pytho
 
 ## ✨ What it can do
 
-| # | Feature | What happens |
-|---|---------|--------------|
-| 1 | **Add expense** | Saves amount, category, note and today's date |
+| Menu option | Feature | What happens |
+|---|---|---|
+| 1 | **Add expense** | Saves amount, category, note and today's date automatically |
 | 2 | **List expenses** | Shows every saved expense |
-| 3 | **Summarize** | Shows the total and the total per category |
+| 3 | **Monthly summary** | Shows the total and the total per category for one month |
 | 4 | **Delete expense** | Removes one expense using its ID |
-| 5 | **Exit** | Saves everything and closes |
+| 5 | **Exit** | Saves everything to a file and closes |
 
 Your data is stored in `ETracker.json`, so it is still there the next time you open the app.
 
@@ -42,6 +42,8 @@ python expense_tracker.py
 
 ## 🖥️ Sample output
 
+**Adding and listing:**
+
 ```
 1. Add Expense
 2. List Expenses
@@ -51,13 +53,24 @@ python expense_tracker.py
 Enter your choice: 1
 Enter expense amount: 250
 Enter expense category: food
-Enter expense note: lunch
+Enter Expense note: lunch
+Expense added successfully!
 
+Enter your choice: 2
+ID: 1 | Date: 2026-11-10 | Amount: 250.0 | Category: food | Note: lunch
+```
+
+**Monthly summary:**
+
+```
 Enter your choice: 3
+Enter month to summarize (e.g., 2026-11): 2026-11
+
+--- Summary for 2026-11 ---
 Total Expenses: 570.0
 Expenses by Category:
-food: 450.0
-travel: 120.0
+  food: 450.0
+  travel: 120.0
 ```
 
 ---
@@ -66,17 +79,17 @@ travel: 120.0
 
 ### 1. Every expense is a dictionary
 
-One expense is stored like a small card with labels:
+One expense is a small card with labels:
 
 ```python
-{"id": 1, "amount": 250.0, "category": "food", "note": "lunch"}
+{"id": 1, "date": "2026-11-10", "amount": 250.0, "category": "food", "note": "lunch"}
 ```
 
-All the cards are kept together in a **list**. Think of it as a box of cards.
+All the cards are kept together in a **list**, like a box of cards.
 
 ### 2. Loading data when the app starts
 
-The app tries to open the file. If this is the first run, the file does not exist yet, so it starts with an empty list instead of crashing:
+The app tries to open the file. On the very first run the file does not exist, so instead of crashing it starts with an empty list:
 
 ```python
 try:
@@ -87,11 +100,11 @@ except FileNotFoundError:
 ```
 
 - `json.load` reads the file and turns the text back into a Python list.
-- `except FileNotFoundError` is the safety net for the very first run.
+- `except FileNotFoundError` is the safety net for the first run.
 
 ### 3. Safe input: no crash on wrong typing
 
-If someone types `abc` where a number is needed, the app does not crash. It asks again:
+If someone types `abc` where a number is needed, the app asks again instead of crashing:
 
 ```python
 while True:
@@ -114,27 +127,38 @@ id = max([int(expense['id']) for expense in a]) + 1 if a else 1
 
 It takes the biggest existing ID and adds 1. If the list is empty, the first ID is 1. This keeps IDs unique even after deleting items.
 
-### 5. Adding up by category with a dictionary
+### 5. The date is added automatically
+
+```python
+date_str = str(datetime.date.today())   # for example "2026-11-10"
+```
+
+The date is stored as text in `year-month-day` format. This makes monthly summaries easy.
+
+### 6. Monthly summary with a dictionary
 
 A dictionary works like a tally sheet: one row per category, with a running total.
 
 ```python
-category_summary = {}
 for expense in a:
-    category = expense['category']
-    category_summary[category] = category_summary.get(category, 0) + expense['amount']
+    expense_date = expense.get('date', '')
+    if expense_date.startswith(month):          # only the chosen month
+        category = expense['category']
+        category_summary[category] = category_summary.get(category, 0) + expense['amount']
 ```
 
+- `startswith("2026-11")` keeps only expenses from November 2026.
 - `.get(category, 0)` means "give me the current total, or 0 if this category is new".
 
-### 6. Saving to the file
+### 7. Saving to the file
 
 ```python
 with open('ETracker.json', 'w') as f:
-    json.dump(a, f)
+    json.dump(a, f, indent=4)
 ```
 
 - `'w'` means write. `json.dump` turns the list into text and stores it in the file.
+- `indent=4` makes the file easy for humans to read.
 
 ---
 
@@ -156,17 +180,18 @@ expense-tracker/
 - Loops, lists, dictionaries and functions
 - Saving and loading data with the `json` module
 - Handling errors with `try / except`
+- Working with dates using the `datetime` module
 - Using Git and GitHub to publish a project
 
 ---
 
 ## 🔮 Ideas to improve next
 
-- Show a summary for one chosen month
+- Save automatically after every change
 - Edit an existing expense
 - Export expenses to CSV
 - Add automated tests
 
 ---
 
-Made by Kamal Teja Goud M· Part of my 16-week AI Engineer roadmap
+Made by Kamal Teja Goud M · Part of my 16-week AI Engineer roadmap
