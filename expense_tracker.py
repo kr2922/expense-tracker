@@ -50,7 +50,7 @@ def delete_expense():
 
 def save_expenses():
     with open('ETracker.json','w') as f:
-        json.dump(a, f, indent=4)
+        json.dump(a, f)
         print("Expenses saved to ETracker.json")
 
 def monthly_summary(month=None):
