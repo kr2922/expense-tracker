@@ -88,12 +88,14 @@ while True:
     choice = input("Enter your choice: ")
     if choice == "1":
         add_expense()
+        save_expenses()
     elif choice == "2":
         list_expenses()
     elif choice == "3":
         monthly_summary()
     elif choice == '4':
         delete_expense()
+        save_expenses()
     elif choice == "5":
         save_expenses()
         break
